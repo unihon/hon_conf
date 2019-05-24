@@ -101,7 +101,7 @@ echo -e "\nCheck pack...\n"
 installPack $1
 echo -e "\nPack ready.\n"
 
-mkdir -p ~/.vim/autoload/; wget -O ~/.vimrc "$VIMRC"; wget -O ~/.vim/autoload/plug.vim "$VIM_PLUG"
+curl -o ~/.vim/autoload/plug.vim --create-dirs "$VIM_PLUG" -o ~/.vimrc "$VIMRC"
 echo -e "\nConfigure file ready.\n"
 
 echo -e "\nFinish!\n"
