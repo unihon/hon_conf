@@ -104,4 +104,6 @@ echo -e "\nPack ready.\n"
 curl -o ~/.vim/autoload/plug.vim --create-dirs "$VIM_PLUG" -o ~/.vimrc "$VIMRC"
 echo -e "\nConfigure file ready.\n"
 
+vim -c PlugInstall -c qall
+
 echo -e "\nFinish!\n"
