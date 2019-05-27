@@ -22,16 +22,16 @@ set updatetime=100
 " tab map key
 nmap <F5> :tabfirst<CR>
 nmap <F6> :tablast<CR>
-nmap <F7> :tabp<CR>
-nmap <F8> :tabn<CR>
+nmap <F7> :tabprevious<CR>
+nmap <F8> :tabnext<CR>
 
 " windows size control map key
-nmap <F9> :vert res +2<CR>
-nmap <F10> :vert res -2<CR>
-nmap <F11> :res +2<CR>
-nmap <F12> :res -2<CR>
+nmap <F9> :vertical resize +2<CR>
+nmap <F10> :vertical resize -2<CR>
+nmap <F11> :resize +2<CR>
+nmap <F12> :resize -2<CR>
 
-nmap <leader>z gg=G
+nmap <leader>z gg=G<C-o><C-o>
 nmap <leader>j :%!python -m json.tool
 
 " StatusLine and TabLine
@@ -97,6 +97,6 @@ nmap <F3> :NERDTreeToggle<CR>
 " airblade/vim-gitgutter
 let g:gitgutter_sign_removed_first_line = '^'
 
-highlight GitGutterAdd    ctermfg=2
+highlight GitGutterAdd ctermfg=2
 highlight GitGutterChange ctermfg=3
 highlight GitGutterDelete ctermfg=1
