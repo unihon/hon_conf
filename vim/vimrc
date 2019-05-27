@@ -38,7 +38,7 @@ nmap <leader>j :%!python -m json.tool
 " ------------------------------------------------
 " StatusLine
 set laststatus=2
-set statusline=%f\ %m%=%y\ [%{&fileformat}]\ [%{&fileencoding}]\ %10(%l,%c%)\ ≡%L\ %P
+set statusline=%f\ %m%=%y\ %{&fileencoding!=''?'['.&fileencoding.']':''}\ %{'['.&fileformat.']'}\ %10(%l,%c%)\ =%L\ %P
 
 " TabLine
 set showtabline=2
@@ -55,6 +55,7 @@ function MyTabLine()
 			let s .= '%#TabLine#'
 		endif
 
+		let s .= '(' . tabpagewinnr((i + 1),'$') . ')'
 		let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
 	endfor
 
