@@ -1,20 +1,15 @@
 set encoding=utf8
 
-nmap <F3> :NERDTreeMirror<CR>
-nmap <F3> :NERDTreeToggle<CR>
+syntax enable
+colorscheme elflord
 
-nmap <F5> :tabfirst<CR>
-nmap <F6> :tablast<CR>
-nmap <F7> :tabp<CR>
-nmap <F8> :tabn<CR>
+set number
+highlight CursorLineNr term=bold ctermfg=3 gui=bold guifg=Yellow
 
-nmap <F9> :vert res +2<CR>
-nmap <F10> :vert res -2<CR>
-nmap <F11> :res +2<CR>
-nmap <F12> :res -2<CR>
-
-nmap <leader>z gg=G
-map <leader>j :%!python -m json.tool
+set numberwidth=2
+set cursorline
+set hlsearch
+set cmdheight=1
 
 set tabstop=4
 set softtabstop=4
@@ -22,16 +17,64 @@ set shiftwidth=4
 
 set backspace=2
 
-set nu
-set hls
-set cul
+set updatetime=100
 
-syntax enable
-colorscheme elflord
-set cmdheight=1
+" tab map key
+nmap <F5> :tabfirst<CR>
+nmap <F6> :tablast<CR>
+nmap <F7> :tabp<CR>
+nmap <F8> :tabn<CR>
 
-" 插件
-" ================================================
+" windows size control map key
+nmap <F9> :vert res +2<CR>
+nmap <F10> :vert res -2<CR>
+nmap <F11> :res +2<CR>
+nmap <F12> :res -2<CR>
+
+nmap <leader>z gg=G
+nmap <leader>j :%!python -m json.tool
+
+" StatusLine and TabLine
+" ------------------------------------------------
+" StatusLine
+set laststatus=2
+set statusline=%f\ %m%=%y\ [%{&fileformat}]\ [%{&fileencoding}]\ %10(%l,%c%)\ ≡%L\ %P
+
+" TabLine
+set showtabline=2
+highlight TabLineSel term=underline,bold,reverse cterm=underline,bold,reverse
+highlight TabLine term=underline,bold cterm=underline,bold
+highlight TabLineFill term=underline,bold cterm=underline,bold ctermbg=NONE
+
+function MyTabLine()
+	let s = ''
+	for i in range(tabpagenr('$'))
+		if i + 1 == tabpagenr()
+			let s .= '%#TabLineSel#'
+		else
+			let s .= '%#TabLine#'
+		endif
+
+		let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+	endfor
+
+	let s .= '%#TabLineFill#'
+	let s .= "%=[%{tabpagenr()}/%{tabpagenr('$')}]"
+
+	return s
+endfunction
+
+function MyTabLabel(n)
+	let buflist = tabpagebuflist(a:n)
+	let winnr = tabpagewinnr(a:n)
+	return pathshorten(bufname(buflist[winnr - 1]))
+endfunction
+
+set tabline=%!MyTabLine()
+" ------------------------------------------------
+
+" 插件列表
+" ------------------------------------------------
 call plug#begin('~/.vim/plugged')
 " 资源树
 Plug 'scrooloose/nerdtree'
@@ -39,5 +82,20 @@ Plug 'scrooloose/nerdtree'
 Plug 'jiangmiao/auto-pairs'
 " 代码注释
 Plug 'tpope/vim-commentary'
-call plug#end()"
-" ================================================
+" git文件状态
+Plug 'airblade/vim-gitgutter'
+call plug#end()
+" ------------------------------------------------
+
+" 插件配置
+" ------------------------------------------------
+" scrooloose/nerdtree
+nmap <F3> :NERDTreeMirror<CR>
+nmap <F3> :NERDTreeToggle<CR>
+
+" airblade/vim-gitgutter
+let g:gitgutter_sign_removed_first_line = '^'
+
+highlight GitGutterAdd    ctermfg=2
+highlight GitGutterChange ctermfg=3
+highlight GitGutterDelete ctermfg=1
