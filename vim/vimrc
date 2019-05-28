@@ -4,7 +4,7 @@ syntax enable
 colorscheme elflord
 
 set number
-highlight CursorLineNr term=bold ctermfg=3 gui=bold guifg=Yellow
+highlight CursorLineNr ctermfg=3
 
 set numberwidth=2
 set cursorline
@@ -38,13 +38,37 @@ nmap <leader>j :%!python -m json.tool
 " ------------------------------------------------
 " StatusLine
 set laststatus=2
-set statusline=%f\ %m%=%y\ %{&fileencoding!=''?'['.&fileencoding.']':''}\ %{'['.&fileformat.']'}\ %10(%l,%c%)\ =%L\ %P
+set statusline=%#CgAc#\ %*%<%f\ %m%=%y\ %{&fileencoding!=''?'['.&fileencoding.']':''}\ %{'['.&fileformat.']'}\ %10(%l,%c%)\ =%L\ %P
+highlight StatusLine cterm=underline,bold ctermfg=0 ctermbg=7
+highlight StatusLineNc cterm=underline ctermfg=0 ctermbg=7
+highlight CgAc cterm=underline,bold ctermfg=7 ctermbg=2
+highlight CgNc cterm=underline,bold ctermfg=7 ctermbg=NONE
+
+function MyStatusLineEnter()
+	if exists('b:NERDTree')
+		return "%{b:NERDTree.root.path.str()}"
+	else
+		return ""
+	endif
+endfunction
+
+function MyStatusLineLeave()
+	if exists('b:NERDTree')
+		return "%{b:NERDTree.root.path.str()}"
+	else
+		return substitute(&g:statusline, 'CgAc', "CgNc", "g")
+	endif
+endfunction
+
+autocmd WinEnter * let &l:statusline=MyStatusLineEnter()
+autocmd WinLeave * let &l:statusline=MyStatusLineLeave()
+
 
 " TabLine
 set showtabline=2
-highlight TabLineSel term=underline,bold,reverse cterm=underline,bold,reverse
-highlight TabLine term=underline,bold cterm=underline,bold
-highlight TabLineFill term=underline,bold cterm=underline,bold ctermbg=NONE
+highlight TabLineSel cterm=underline,bold ctermfg=7 ctermbg=2
+highlight TabLine cterm=underline ctermfg=0 ctermbg=7
+highlight TabLineFill cterm=underline,bold ctermfg=7 ctermbg=NONE
 
 function MyTabLine()
 	let s = ''
@@ -55,7 +79,7 @@ function MyTabLine()
 			let s .= '%#TabLine#'
 		endif
 
-		let s .= '(' . tabpagewinnr((i + 1),'$') . ')'
+		let s .= ' (' . tabpagewinnr((i + 1),'$') . ')'
 		let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
 	endfor
 
@@ -91,7 +115,6 @@ call plug#end()
 " 插件配置
 " ------------------------------------------------
 " scrooloose/nerdtree
-nmap <F3> :NERDTreeMirror<CR>
 nmap <F3> :NERDTreeToggle<CR>
 
 " airblade/vim-gitgutter
