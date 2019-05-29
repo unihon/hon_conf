@@ -38,15 +38,10 @@ nmap <leader>j :%!python -m json.tool
 " ------------------------------------------------
 " StatusLine
 set laststatus=2
-set statusline=%f\ %m%=%y\ %{&fileencoding!=''?'['.&fileencoding.']':''}\ %{'['.&fileformat.']'}\ %10(%l,%c%)\ =%L\ %P
-highlight StatusLine cterm=NONE ctermfg=0 ctermbg=2
-highlight StatusLineNc cterm=NONE ctermfg=0 ctermbg=7
+set statusline=%f\ %#CgMf#%m%*%=%y\ %{&fileencoding!=''?'['.&fileencoding.']':''}\ %{'['.&fileformat.']'}\ %10(%l,%c%)\ =%L\ %P
 
 " TabLine
 set showtabline=2
-highlight TabLineSel cterm=NONE ctermfg=0 ctermbg=2
-highlight TabLine cterm=NONE ctermfg=0 ctermbg=7
-highlight TabLineFill cterm=NONE ctermfg=0 ctermbg=7
 
 function MyTabLine()
 	let s = ''
@@ -74,6 +69,29 @@ function MyTabLabel(n)
 endfunction
 
 set tabline=%!MyTabLine()
+
+" StatusLine and TabLine highlight
+if &t_Co > 8 
+	" 16 or 256 color
+	" StatusLine
+	highlight StatusLine cterm=bold ctermfg=0 ctermbg=10
+	highlight StatusLineNc cterm=NONE ctermfg=0 ctermbg=7
+	highlight CgMf cterm=bold ctermfg=0 ctermbg=11
+	" TabLine
+	highlight TabLineSel cterm=bold ctermfg=0 ctermbg=10
+	highlight TabLine cterm=NONE ctermfg=7 ctermbg=8
+	highlight TabLineFill cterm=bold ctermfg=0 ctermbg=7
+else
+	" 8 color
+	" StatusLine
+	highlight StatusLine cterm=NONE ctermfg=0 ctermbg=2
+	highlight StatusLineNc cterm=NONE ctermfg=0 ctermbg=7
+	highlight CgMf cterm=NONE ctermfg=0 ctermbg=3
+	" TabLine
+	highlight TabLineSel cterm=NONE ctermfg=0 ctermbg=2
+	highlight TabLine cterm=NONE ctermfg=0 ctermbg=7
+	highlight TabLineFill cterm=NONE ctermfg=0 ctermbg=7
+endif
 " ------------------------------------------------
 
 " 插件列表
