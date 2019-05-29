@@ -38,37 +38,15 @@ nmap <leader>j :%!python -m json.tool
 " ------------------------------------------------
 " StatusLine
 set laststatus=2
-set statusline=%#CgAc#\ %*%<%f\ %m%=%y\ %{&fileencoding!=''?'['.&fileencoding.']':''}\ %{'['.&fileformat.']'}\ %10(%l,%c%)\ =%L\ %P
-highlight StatusLine cterm=underline,bold ctermfg=0 ctermbg=7
-highlight StatusLineNc cterm=underline ctermfg=0 ctermbg=7
-highlight CgAc cterm=underline,bold ctermfg=7 ctermbg=2
-highlight CgNc cterm=underline,bold ctermfg=7 ctermbg=NONE
-
-function MyStatusLineEnter()
-	if exists('b:NERDTree')
-		return "%{b:NERDTree.root.path.str()}"
-	else
-		return ""
-	endif
-endfunction
-
-function MyStatusLineLeave()
-	if exists('b:NERDTree')
-		return "%{b:NERDTree.root.path.str()}"
-	else
-		return substitute(&g:statusline, 'CgAc', "CgNc", "g")
-	endif
-endfunction
-
-autocmd WinEnter * let &l:statusline=MyStatusLineEnter()
-autocmd WinLeave * let &l:statusline=MyStatusLineLeave()
-
+set statusline=%f\ %m%=%y\ %{&fileencoding!=''?'['.&fileencoding.']':''}\ %{'['.&fileformat.']'}\ %10(%l,%c%)\ =%L\ %P
+highlight StatusLine cterm=NONE ctermfg=0 ctermbg=2
+highlight StatusLineNc cterm=NONE ctermfg=0 ctermbg=7
 
 " TabLine
 set showtabline=2
-highlight TabLineSel cterm=underline,bold ctermfg=7 ctermbg=2
-highlight TabLine cterm=underline ctermfg=0 ctermbg=7
-highlight TabLineFill cterm=underline,bold ctermfg=7 ctermbg=NONE
+highlight TabLineSel cterm=NONE ctermfg=0 ctermbg=2
+highlight TabLine cterm=NONE ctermfg=0 ctermbg=7
+highlight TabLineFill cterm=NONE ctermfg=0 ctermbg=7
 
 function MyTabLine()
 	let s = ''

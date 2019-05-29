@@ -34,7 +34,7 @@ checkPack(){
 	if [ "$DIST" == "centos" ]; then
 		rpm -qa $1 | grep -iq "$1" && return 0 || return 1
 	elif [ "$DIST" == "debian" -o "$DIST" == "ubuntu" ]; then
-		dpkg -l | grep -iq "^ii\b$1\b" && return 0 || return 1
+		dpkg -l | grep -iq "$1" && return 0 || return 1
 	else
 		return 1
 	fi
