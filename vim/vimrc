@@ -1,22 +1,22 @@
 set encoding=utf8
 
-syntax enable
 colorscheme elflord
+syntax enable
 
 set number
+set numberwidth=2
 highlight CursorLineNr ctermfg=3
 
-set numberwidth=2
 set cursorline
 set hlsearch
 set cmdheight=1
+set wildmenu
 
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 
 set backspace=2
-
 set updatetime=100
 
 " tab map key
@@ -73,6 +73,7 @@ set tabline=%!MyTabLine()
 " StatusLine and TabLine highlight
 if &t_Co > 8 
 	" 16 or 256 color
+	"
 	" StatusLine
 	highlight StatusLine cterm=bold ctermfg=0 ctermbg=10
 	highlight StatusLineNc cterm=NONE ctermfg=0 ctermbg=7
@@ -83,6 +84,7 @@ if &t_Co > 8
 	highlight TabLineFill cterm=bold ctermfg=0 ctermbg=7
 else
 	" 8 color
+	"
 	" StatusLine
 	highlight StatusLine cterm=NONE ctermfg=0 ctermbg=2
 	highlight StatusLineNc cterm=NONE ctermfg=0 ctermbg=7
@@ -92,23 +94,32 @@ else
 	highlight TabLine cterm=NONE ctermfg=0 ctermbg=7
 	highlight TabLineFill cterm=NONE ctermfg=0 ctermbg=7
 endif
-" ------------------------------------------------
 
-" 插件列表
+
+" list of plugins
 " ------------------------------------------------
 call plug#begin('~/.vim/plugged')
-" 资源树
+" basic
+"
+" 文件资源树
 Plug 'scrooloose/nerdtree'
-" 括号补全
-Plug 'jiangmiao/auto-pairs'
-" 代码注释
+" 注释
 Plug 'tpope/vim-commentary'
-" git文件状态
+" 符号成对补全
+Plug 'jiangmiao/auto-pairs'
+
+" develop
+"
+" 文件git状态
 Plug 'airblade/vim-gitgutter'
+" html快速编写
+Plug 'mattn/emmet-vim'
+" js高亮及格式化
+Plug 'pangloss/vim-javascript'
 call plug#end()
 " ------------------------------------------------
 
-" 插件配置
+" plugin options
 " ------------------------------------------------
 " scrooloose/nerdtree
 nmap <F3> :NERDTreeToggle<CR>
