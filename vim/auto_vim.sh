@@ -30,14 +30,7 @@ getDist(){
 # check pack state.
 checkPack(){
 	[ "$1" == "" ] && return 0
-
-	if [ "$DIST" == "centos" ]; then
-		rpm -qa $1 | grep -iq "$1" && return 0 || return 1
-	elif [ "$DIST" == "debian" -o "$DIST" == "ubuntu" ]; then
-		dpkg -l | grep -iq "$1" && return 0 || return 1
-	else
-		return 1
-	fi
+	type $1 &> /dev/null && return 0 || return 1
 }
 
 # get uninstall pack lists.
@@ -51,13 +44,35 @@ unPackList(){
 
 # install pack
 installPack(){
+	if [ "$1" == "-p" ]; then
+		cat << EFO
++-----------------------------------------------------------+
+  Pack(s) ready, direct deploy vim!
++-----------------------------------------------------------+
+
+EFO
+		return 0
+	fi
+
+	cat << EFO
++-----------------------------------------------------------+
+  Check pack...
++-----------------------------------------------------------+
+
+EFO
+
 	# check state.
 	unPackList "${PACKS[@]}"
 	if [ ${#PACK_UN_LIST[@]} -ne 0 ]; then
 		if [ "$1" != "-y" ]; then
-			echo "Will install this pack:" 
-			echo -e "\n${PACK_UN_LIST[@]}\n" 
-			echo -n "Confirm to continue? [y/n]: "
+			cat << EFO
++-----------------------------------------------------------+
+  The following pack(s) will be installed:
+  ${PACK_UN_LIST[@]}
++-----------------------------------------------------------+
+
+  Confirm to continue? [y/n]:
+EFO
 
 			read sSkey
 			if [ "$sSkey" == "n" ]; then
@@ -66,6 +81,12 @@ installPack(){
 			fi
 		fi
 	else
+		cat << EFO
++-----------------------------------------------------------+
+  Pack(s) ready!
++-----------------------------------------------------------+
+
+EFO
 		return 0	
 	fi
 
@@ -81,15 +102,38 @@ installPack(){
 	# check pack install state.
 	unPackList "${PACKS[@]}"
 	if [ ${#PACK_UN_LIST} -ne 0 ]; then
-		echo "This pack is not install:" 
-		echo -e "\n${PACK_UN_LIST[@]}\n" 
-		echo -n "Do you whant to try install again? [y/n]: "
+		cat << EFO
++-----------------------------------------------------------+
+  The following pack(s) is not install:
+  ${PACK_UN_LIST[@]}
++-----------------------------------------------------------+
+
+  Do you whant to try install again? [y/n/p]: 
+EFO
+
 		read sSkey
 		if [ "$sSkey" == "y" ]; then
 			installPack
+		elif [ "$sSkey" == "p" ]; then
+			cat << EFO
++-----------------------------------------------------------+
+  Pack(s) ready, direct deploy vim!
++-----------------------------------------------------------+
+
+EFO
+
 		else
 			echo "Exit."
+			exit
 		fi
+	else
+cat << EFO
++-----------------------------------------------------------+
+  Pack(s) ready!
++-----------------------------------------------------------+
+
+EFO
+
 	fi
 }
 
@@ -97,13 +141,23 @@ installPack(){
 
 DIST=$(getDist); [ "$DIST" == "none" ] && echo "Don't know DIST." && exit
 
-echo -e "\nCheck pack...\n"
 installPack $1
-echo -e "\nPack ready.\n"
 
 curl -o ~/.vim/autoload/plug.vim --create-dirs "$VIM_PLUG" -o ~/.vimrc "$VIMRC"
-echo -e "\nConfigure file ready.\n"
+
+cat << EFO
+
++-----------------------------------------------------------+
+  Configure files ready!
++-----------------------------------------------------------+
+
+EFO
 
 vim -c PlugInstall -c qall
 
-echo -e "\nFinish!\n"
+cat << EFO
++-----------------------------------------------------------+
+  Complect!
++-----------------------------------------------------------+
+
+EFO
