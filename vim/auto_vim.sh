@@ -15,6 +15,12 @@ DIST=""
 # uninstall pack lists
 PACK_UN_LIST=()
 
+messOutPut(){
+	echo -e "\n+-----------------------------------------------------------+"
+	echo -e " $@"
+	echo -e "+-----------------------------------------------------------+\n"
+}
+
 getDist(){
 	if grep -iq "centos" $ISSUE_FILE $RELEASE_FILE; then
 		echo "centos"
@@ -45,48 +51,26 @@ unPackList(){
 # install pack
 installPack(){
 	if [ "$1" == "-p" ]; then
-		cat << EFO
-+-----------------------------------------------------------+
-  Pack(s) ready, direct deploy vim!
-+-----------------------------------------------------------+
-
-EFO
+		messOutPut "Pack(s) ready, direct deploy vim!"
 		return 0
 	fi
 
-	cat << EFO
-+-----------------------------------------------------------+
-  Check pack...
-+-----------------------------------------------------------+
-
-EFO
+	messOutPut "Check pack..."
 
 	# check state.
 	unPackList "${PACKS[@]}"
 	if [ ${#PACK_UN_LIST[@]} -ne 0 ]; then
 		if [ "$1" != "-y" ]; then
-			cat << EFO
-+-----------------------------------------------------------+
-  The following pack(s) will be installed:
-  ${PACK_UN_LIST[@]}
-+-----------------------------------------------------------+
+			messOutPut "The following pack(s) will be installed:\n" ${PACK_UN_LIST[@]}
 
-EFO
-
-			echo -n "Confirm to continue? [y/n]: "
-			read sSkey
+			read -p "Confirm to continue? [y/n]: " sSkey
 			if [ "$sSkey" == "n" ]; then
 				echo "Exit."
 				exit
 			fi
 		fi
 	else
-		cat << EFO
-+-----------------------------------------------------------+
-  Pack(s) ready!
-+-----------------------------------------------------------+
-
-EFO
+		messOutPut "Pack(s) ready!"
 		return 0	
 	fi
 
@@ -102,38 +86,19 @@ EFO
 	# check pack install state.
 	unPackList "${PACKS[@]}"
 	if [ ${#PACK_UN_LIST} -ne 0 ]; then
-		cat << EFO
-+-----------------------------------------------------------+
-  The following pack(s) is not install:
-  ${PACK_UN_LIST[@]}
-+-----------------------------------------------------------+
+		messOutPut "The following pack(s) is not install\n" ${PACK_UN_LIST[@]}
 
-EFO
-
-		echo -n "Do you whant to try install again? [y/n/p]: "
-		read sSkey
+		read -p "Do you whant to try install again? [y/n/p]: " sSkey
 		if [ "$sSkey" == "y" ]; then
 			installPack
 		elif [ "$sSkey" == "p" ]; then
-			cat << EFO
-+-----------------------------------------------------------+
-  Pack(s) ready, direct deploy vim!
-+-----------------------------------------------------------+
-
-EFO
-
+			messOutPut "Pack(s) ready, direct deploy vim!"
 		else
 			echo "Exit."
 			exit
 		fi
 	else
-cat << EFO
-+-----------------------------------------------------------+
-  Pack(s) ready!
-+-----------------------------------------------------------+
-
-EFO
-
+		messOutPut "Pack(s) ready!"
 	fi
 }
 
@@ -143,21 +108,14 @@ DIST=$(getDist); [ "$DIST" == "none" ] && echo "Don't know DIST." && exit
 
 installPack $1
 
-curl -o ~/.vim/autoload/plug.vim --create-dirs "$VIM_PLUG" -o ~/.vimrc "$VIMRC"
+if type curl &> /dev/null; then
+	curl -o ~/.vim/autoload/plug.vim --create-dirs "$VIM_PLUG" -o ~/.vimrc "$VIMRC"
+else
+	wget -P ~/.vim/autoload/ "$VIM_PLUG"; wget -O ~/.vimrc "$VIMRC"
+fi
 
-cat << EFO
-
-+-----------------------------------------------------------+
-  Configure files ready!
-+-----------------------------------------------------------+
-
-EFO
+messOutPut "Configure files ready!"
 
 vim -c PlugInstall -c qall
 
-cat << EFO
-+-----------------------------------------------------------+
-  Complect!
-+-----------------------------------------------------------+
-
-EFO
+messOutPut "Complect!"
