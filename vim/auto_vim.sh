@@ -71,9 +71,9 @@ EFO
   ${PACK_UN_LIST[@]}
 +-----------------------------------------------------------+
 
-  Confirm to continue? [y/n]:
 EFO
 
+			echo -n "Confirm to continue? [y/n]: "
 			read sSkey
 			if [ "$sSkey" == "n" ]; then
 				echo "Exit."
@@ -108,9 +108,9 @@ EFO
   ${PACK_UN_LIST[@]}
 +-----------------------------------------------------------+
 
-  Do you whant to try install again? [y/n/p]: 
 EFO
 
+		echo -n "Do you whant to try install again? [y/n/p]: "
 		read sSkey
 		if [ "$sSkey" == "y" ]; then
 			installPack
