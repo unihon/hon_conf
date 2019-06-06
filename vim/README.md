@@ -1,7 +1,11 @@
-# VIM auto configuration script
+# vim auto configuration script
+
+## 配置
 
 ``` bash
+# curl
 bash <(curl https://raw.githubusercontent.com/unihon/hon_conf/master/vim/auto_vim.sh)
+# wget
 bash <(wget -q -O - https://raw.githubusercontent.com/unihon/hon_conf/master/vim/auto_vim.sh)
 ```
 
