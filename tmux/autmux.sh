@@ -3,12 +3,15 @@
 set -e
 
 # check pack
-type jq &> /dev/null || echo "Request jq!"
+if ! type jq &> /dev/null ; then
+	echo "Request jq!"
+	exit
+fi
 
 sname='stuido'
 
 windows_option='{
-"dev": {"layout": "tiled","panes": ["", "", ""]},
+"dev": {"layout": "tiled","panes": ["", "", ""], "zoom": 2},
 "work": {"panes": ["", ""]}
 }'
 
@@ -16,10 +19,77 @@ windows_option='{
 #	"window": {"layout": "layout-name", "panes": ["command", ""]}
 # }
 #
-# layout is optional
+# layout is optional.
 # if you don't want let panes to execute the command, then let it be "".
-# and the number of panes is equal to the length of the array
+# and the number of panes is equal to the length of the array.
+# zoom is optional, zoom the pane of the specify pane number.
 
+
+# ----------------------------------------
+
+# sendKeys window-name panes-index
+sendKeys(){
+	cmd=$(echo $windows_option | jq -r .$1.panes[$2])
+	tmux send-keys clear C-m
+	[ -n "$cmd" ] && tmux send-keys "$cmd" C-m
+	return 0
+}
+
+# setTitle window-name pane-number
+setTitle(){
+	tmux select-pane -T $1-$2
+}
+
+# createPanes window-name
+createPanes(){
+	# create panes
+	panes=$(echo $windows_option | jq ".$1.panes | length")
+	panes=$(( $panes-1 ))
+
+	setTitle $1 0
+	for j in $(seq $panes)
+	do
+		tmux split-window
+		setTitle $1 $j
+
+		# send keys to split-window-pane
+		sendKeys $1 $j
+
+	done
+	return 0
+}
+
+createWindows(){
+	# create windows
+	for i in $(seq 0 $(( $windows_count-1 )))
+	do
+
+		if [ $i -eq 0 ]; then
+			tmux new -d -s $sname -n ${windows[$i]}
+		else
+			tmux new-window -n ${windows[$i]}
+		fi
+
+		# send keys to first window-pane
+		sendKeys ${windows[$i]} 0
+
+		# create panes
+		createPanes ${windows[$i]}
+
+		# set windows layout
+		window_layout=$(echo $windows_option | jq -r .${windows[$i]}.layout)
+		[ "$window_layout" == "null" ] && window_layout="tiled"
+		tmux select-layout $window_layout
+
+		# zoom pane
+		zoom_number=$(echo $windows_option | jq -r .${windows[$i]}.zoom)
+		[ "$zoom_number" != "null" ] && tmux resize-pane -Z -t $zoom_number || tmux select-pane -t 0
+
+	done
+
+	tmux select-window -t 0
+	return 0
+}
 
 # ----------------------------------------
 
@@ -35,40 +105,6 @@ do
 	windows[$l]=$(echo $windows_option | jq -r keys_unsorted[$l])
 done
 
-# create windows
-for i in $(seq 0 $(( $windows_count-1 )))
-do
+createWindows
 
-	if [ $i -eq 0 ]; then
-		tmux new -d -s $sname -n ${windows[$i]}
-	else
-		tmux new-window -n ${windows[$i]}
-	fi
-
-	# send keys to first window-pane
-	cmd=$(echo $windows_option | jq -r .${windows[$i]}.panes[0])
-	tmux send-keys clear C-m
-	[ -n "$cmd" ] && tmux send-keys "$cmd" C-m
-
-	# create panes
-	panes=$(echo $windows_option | jq ".${windows[$i]}.panes | length")
-	panes=$(( $panes-1 ))
-	for j in $(seq $panes)
-	do
-		tmux split-window
-
-		# send keys to split-window-pane
-		cmd=$(echo $windows_option | jq -r .${windows[$i]}.panes[$j])
-		tmux send-keys clear C-m
-		[ -n "$cmd" ] && tmux send-keys "$cmd" C-m
-	done
-
-	# set windows layout
-	window_layout=$(echo $windows_option | jq -r .${windows[$i]}.layout)
-	[ "$window_layout" == "null" ] && window_layout="tiled"
-	tmux select-layout $window_layout
-done
-
-tmux select-window -t 0
-tmux select-pane -t 0
 tmux a -t $sname 
