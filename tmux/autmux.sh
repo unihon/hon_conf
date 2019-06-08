@@ -16,7 +16,7 @@ windows_option='{
 }'
 
 # {
-#	"window": {"layout": "layout-name", "panes": ["command", ""]}
+#	"window-name": {"layout": "layout-name", "panes": ["command", ""], "zoom": pane-number}
 # }
 #
 # layout is optional.
@@ -92,10 +92,6 @@ createWindows(){
 }
 
 # ----------------------------------------
-
-echo "-------------------------
-doing...
--------------------------"
 
 windows_count=$(echo $windows_option | jq "length")
 
