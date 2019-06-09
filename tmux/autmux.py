@@ -18,7 +18,7 @@
 # and the number of panes is equal to the length of the array.
 # zoom and active is optional, zoom or active the pane of the specify pane number, and zoom is more preferred.
 #
-# note: execute `:s%/run/call/g` on vim make it compatible with python2
+# note: execute `:%s/run/call/g` on vim make it compatible with python2
 
 # ----------------------------------------
 
