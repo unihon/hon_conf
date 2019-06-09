@@ -32,7 +32,7 @@ nmap <F11> :resize +2<CR>
 nmap <F12> :resize -2<CR>
 
 nmap <leader>z gg=G<C-o><C-o>
-nmap <leader>j :%!python -m json.tool
+nmap <leader>j :%!python -m json.tool<CR>
 
 " StatusLine and TabLine
 " ------------------------------------------------
