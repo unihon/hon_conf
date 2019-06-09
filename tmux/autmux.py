@@ -33,10 +33,10 @@ WINDOWS_OPTION = {
 
 # sendKeys window-item pane-number
 def sendKeys(window_item, pane_number):
-    run(['tmux', 'send-keys', 'clear', 'C-m'])
     cmd = WINDOWS_OPTION[window_item]['panes'][pane_number]
 
     if (cmd != ""):
+        run(['tmux', 'send-keys', 'clear', 'C-m'])
         run(['tmux', 'send-keys', cmd, 'C-m'])
 
     return 0
