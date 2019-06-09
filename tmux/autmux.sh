@@ -49,7 +49,8 @@ createPanes(){
 	setTitle $1 0
 	for j in $(seq $panes)
 	do
-		tmux split-window
+        # maybe no enough space for new pane
+		tmux split-window -h -p 100
 		setTitle $1 $j
 
 		# send keys to split-window-pane
