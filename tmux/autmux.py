@@ -74,7 +74,7 @@ def createWindows(SESSION_NAME):
     for window_item in sorted(WINDOWS_OPTION.keys()):
         window_name = WINDOWS_OPTION[window_item]['name']
 
-        if (window_name == WINDOWS_OPTION['w_0']['name']):
+        if (window_item == 'w_0'):
             run(['tmux', 'new', '-d', '-s', SESSION_NAME, '-n', window_name])
         else:
             run(['tmux', 'new-window', '-n', window_name])
