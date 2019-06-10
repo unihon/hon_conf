@@ -44,7 +44,12 @@ def sendKeys(window_item, pane_number):
 
 # setTitle window-name pane-number
 def setTitle(window_name, pane_number):
+    # may don't work on centos 7 when set default-terminal isn't screen* or tmux*,
+    # pane title will restore or change when enter keys
+    # set default-terminal to be screen* to fix it
     run(['tmux', 'select-pane', '-T', window_name + '-' + str(pane_number)])
+
+    return 0
 
 
 # createPanes window-item
