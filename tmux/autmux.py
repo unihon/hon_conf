@@ -49,17 +49,6 @@ except:
     SESSION_NAME = DEFAULT_PROJECT
 
 
-# sendKeys window-item pane-number
-def sendKeys(window_item, pane_number):
-    cmd = WINDOWS_OPTION[window_item]['panes'][pane_number]
-
-    if (cmd != ""):
-        run(['tmux', 'send-keys', 'clear', 'C-m'])
-        run(['tmux', 'send-keys', cmd, 'C-m'])
-
-    return 0
-
-
 # setTitle window-name pane-number
 def setTitle(window_name, pane_number):
     # may don't work on centos 7 when set default-terminal isn't screen* or tmux*,
@@ -70,18 +59,29 @@ def setTitle(window_name, pane_number):
     return 0
 
 
-# createPanes window-item
-def createPanes(window_item):
-    # set title for first window-pane
-    setTitle(WINDOWS_OPTION[window_item]['name'], 0)
+# sendKeys window-item
+def sendKeys(window_item):
+    for pane_number in range(len(WINDOWS_OPTION[window_item]['panes'])):
+        run(['tmux', 'select-pane', '-t', str(pane_number)])
 
-    for pane_number in range(1, len(WINDOWS_OPTION[window_item]['panes'])):
-        # maybe no enough space for new pane
-        run(['tmux', 'split-window', '-p', '100'])
+        # set title for first window-pane
         setTitle(WINDOWS_OPTION[window_item]['name'], pane_number)
 
-        # send keys to split-window-pane
-        sendKeys(window_item, pane_number)
+        # if the software (eg: vim) can't run on a smaller terminal, an error may be reported
+        cmd = WINDOWS_OPTION[window_item]['panes'][pane_number]
+        if (cmd != ""):
+            run(['tmux', 'send-keys', 'clear', 'C-m'])
+            run(['tmux', 'send-keys', cmd, 'C-m'])
+
+    return 0
+
+
+# createPanes window-item
+def createPanes(window_item):
+    for pane_number in range(len(WINDOWS_OPTION[window_item]['panes'])-1):
+        # maybe no enough space for new pane
+        # if you want more panes, you can use `-h` horizontal split
+        run(['tmux', 'split-window', '-p', '100'])
 
     return 0
 
@@ -97,15 +97,15 @@ def createWindows(SESSION_NAME):
         else:
             run(['tmux', 'new-window', '-n', window_name])
 
-        # send keys to first window-pane
-        sendKeys(window_item, 0)
-
         # create panes
         createPanes(window_item)
 
         # set windows layout
         window_layout = WINDOWS_OPTION[window_item].get('layout', 'tiled')
         run(['tmux', 'select-layout', window_layout])
+
+        # send keys and set title
+        sendKeys(window_item)
 
         # zoom pane or select pane
         if (WINDOWS_OPTION[window_item].__contains__('zoom')):
