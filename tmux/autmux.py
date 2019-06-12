@@ -22,13 +22,31 @@
 
 # ----------------------------------------
 
+import sys
 from subprocess import run
 
-SESSION_NAME = 'studio'
-WINDOWS_OPTION = {
+# project list
+
+light = {
+        "w_0": {"name": "dev", "layout": "tiled", "panes": ["", ""]},
+        "w_1": {"name": "work", "layout": "tiled", "panes": [""]}
+        }
+
+studio = {
         "w_0": {"name": "dev", "layout": "tiled", "panes": ["", "", ""], "zoom": 2},
         "w_1": {"name": "work", "layout": "tiled", "panes": ["", ""]}
         }
+
+DEFAULT_PROJECT = 'light'
+
+# ----------------------------------------
+
+try:
+    WINDOWS_OPTION = locals()[sys.argv[1]]
+    SESSION_NAME = sys.argv[1]
+except:
+    WINDOWS_OPTION = locals()[DEFAULT_PROJECT]
+    SESSION_NAME = DEFAULT_PROJECT
 
 
 # sendKeys window-item pane-number
