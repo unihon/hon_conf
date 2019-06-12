@@ -77,7 +77,7 @@ def createPanes(window_item):
 
     for pane_number in range(1, len(WINDOWS_OPTION[window_item]['panes'])):
         # maybe no enough space for new pane
-        run(['tmux', 'split-window', '-h', '-p', '100'])
+        run(['tmux', 'split-window', '-p', '100'])
         setTitle(WINDOWS_OPTION[window_item]['name'], pane_number)
 
         # send keys to split-window-pane
