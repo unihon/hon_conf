@@ -64,10 +64,11 @@ def sendKeys(window_item):
     for pane_number in range(len(WINDOWS_OPTION[window_item]['panes'])):
         run(['tmux', 'select-pane', '-t', str(pane_number)])
 
-        # set title for first window-pane
+        # set title
         setTitle(WINDOWS_OPTION[window_item]['name'], pane_number)
 
         # if the software (eg: vim) can't run on a smaller terminal, an error may be reported
+        # use `-h` horizontal split or add `sleep` to fix it
         cmd = WINDOWS_OPTION[window_item]['panes'][pane_number]
         if (cmd != ""):
             run(['tmux', 'send-keys', 'clear', 'C-m'])
