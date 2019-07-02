@@ -110,12 +110,14 @@ call plug#begin('~/.vim/plugged')
 
 " develop
 "
-" 文件git状态
+" 文件 git 状态
 " Plug 'airblade/vim-gitgutter'
-" html快速编写
+" html 快速编写
 " Plug 'mattn/emmet-vim'
-" js高亮及格式化
+" js 高亮及格式化
 " Plug 'pangloss/vim-javascript'
+" vue
+" Plug 'posva/vim-vue'
 call plug#end()
 " ------------------------------------------------
 

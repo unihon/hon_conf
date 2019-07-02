@@ -125,6 +125,7 @@ selectPlugin(){
 		"airblade/vim-gitgutter" "" OFF \
 		"mattn/emmet-vim" "" OFF \
 		"pangloss/vim-javascript" "" OFF \
+		"posva/vim-vue" "" OFF \
 		3>&1 1>&2 2>&3)
 
 	if [ $? -eq 0 ]; then
