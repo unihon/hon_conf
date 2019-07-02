@@ -16,9 +16,14 @@ DIST=""
 PACK_UN_LIST=()
 
 messOutPut(){
-	echo -e "\n+-----------------------------------------------------------+"
+	echo -e "\n+<-----------------------------------------------------------+"
 	echo -e " $@"
-	echo -e "+-----------------------------------------------------------+\n"
+	echo -e "+----------------------------------------------------------->+\n"
+}
+
+autoHelp(){
+	messOutPut "You can use: -y -p -s."
+	return 0
 }
 
 getDist(){
@@ -50,7 +55,7 @@ unPackList(){
 
 # install pack
 installPack(){
-	if [ "$1" == "-p" ]; then
+	if [ "$OPT_p" == "y" ]; then
 		messOutPut "Pack(s) ready, direct deploy vim!"
 		return 0
 	fi
@@ -60,11 +65,11 @@ installPack(){
 	# check state.
 	unPackList "${PACKS[@]}"
 	if [ ${#PACK_UN_LIST[@]} -ne 0 ]; then
-		if [ "$1" != "-y" ]; then
+		if [ "$OPT_y" != "y"  ]; then
 			messOutPut "The following pack(s) will be installed:\n" ${PACK_UN_LIST[@]}
 
 			read -p "Confirm to continue? [y/n]: " sSkey
-			if [ "$sSkey" == "n" ]; then
+			if [ "$sSkey" == "n"  ]; then
 				echo "Exit."
 				exit
 			fi
@@ -102,11 +107,51 @@ installPack(){
 	fi
 }
 
+defPlugin(){
+	DEF_PLUGIN=("scrooloose/nerdtree" "tpope/vim-commentary" "jiangmiao/auto-pairs")
+	for i in ${DEF_PLUGIN[@]}
+	do
+		sed -r -i "s:^\"\s(Plug\s'${i}'$):\1:" ~/.vimrc
+	done
+}
+
+selectPlugin(){
+	plugins=$(whiptail \
+		--title "Checklist vim plugin" \
+		--checklist "" 13 39 6 \
+		"scrooloose/nerdtree" "" ON \
+		"tpope/vim-commentary" "" ON \
+		"jiangmiao/auto-pairs" "" ON \
+		"airblade/vim-gitgutter" "" OFF \
+		"mattn/emmet-vim" "" OFF \
+		"pangloss/vim-javascript" "" OFF \
+		3>&1 1>&2 2>&3)
+
+	if [ $? -eq 0 ]; then
+		for i in $plugins
+		do
+			i=$(echo $i | sed -r 's:^"(.*)"$:\1:')
+			sed -r -i "s:^\"\s(Plug\s'${i}'$):\1:" ~/.vimrc
+		done
+	else
+		defPlugin
+	fi
+}
+
 #---------------------------------
+
+while getopts yps FLAG 2> /dev/null; do
+	case $FLAG in
+		y) OPT_y='y' ;;
+		p) OPT_p='y' ;;
+		s) OPT_s='y' ;;
+		\?) autoHelp; exit 1 ;;
+	esac
+done
 
 DIST=$(getDist); [ "$DIST" == "none" ] && echo "Don't know DIST." && exit
 
-installPack $1
+installPack
 
 if type curl &> /dev/null; then
 	curl -o ~/.vim/autoload/plug.vim --create-dirs "$VIM_PLUG" -o ~/.vimrc "$VIMRC"
@@ -115,6 +160,8 @@ else
 fi
 
 messOutPut "Configure files ready!"
+
+[ "$OPT_s" == "y" ] && selectPlugin || defPlugin
 
 vim -c PlugInstall -c qall
 
