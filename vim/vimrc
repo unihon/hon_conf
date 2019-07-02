@@ -102,20 +102,20 @@ call plug#begin('~/.vim/plugged')
 " basic
 "
 " 文件资源树
-Plug 'scrooloose/nerdtree'
+" Plug 'scrooloose/nerdtree'
 " 注释
-Plug 'tpope/vim-commentary'
+" Plug 'tpope/vim-commentary'
 " 符号成对补全
-Plug 'jiangmiao/auto-pairs'
+" Plug 'jiangmiao/auto-pairs'
 
 " develop
 "
 " 文件git状态
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 " html快速编写
-Plug 'mattn/emmet-vim'
+" Plug 'mattn/emmet-vim'
 " js高亮及格式化
-Plug 'pangloss/vim-javascript'
+" Plug 'pangloss/vim-javascript'
 call plug#end()
 " ------------------------------------------------
 
