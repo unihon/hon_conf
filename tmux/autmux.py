@@ -23,12 +23,12 @@
 # ----------------------------------------
 
 import sys
-from subprocess import run
+from subprocess import run, PIPE
 
 # project list
 
 light = {
-        "w_0": {"name": "dev", "layout": "tiled", "panes": ["", ""]},
+        "w_0": {"name": "dev", "layout": "tiled", "panes": ["", ""], "zoom": 0},
         "w_1": {"name": "work", "layout": "tiled", "panes": [""]}
         }
 
@@ -41,6 +41,7 @@ DEFAULT_PROJECT = 'light'
 
 # ----------------------------------------
 
+# get var name from command line args, and get the var from locals var
 try:
     WINDOWS_OPTION = locals()[sys.argv[1]]
     SESSION_NAME = sys.argv[1]
@@ -48,24 +49,33 @@ except:
     WINDOWS_OPTION = locals()[DEFAULT_PROJECT]
     SESSION_NAME = DEFAULT_PROJECT
 
+# check session for existence
+def check_session(session_name):
+    run_res = run(['tmux', 'ls', '-F', '#{session_name}'], stdout=PIPE, encoding='UTF-8')
+    if session_name in run_res.stdout.split('\n'):
+        # print('> session %s already exists.' % session_name)
+        return True
+    else:
+        return False
 
-# setTitle window-name pane-number
-def setTitle(window_name, pane_number):
+
+# set title window-name pane-number
+def set_title(window_name, pane_number):
     # may don't work on centos 7 when set default-terminal isn't screen* or tmux*,
     # pane title will restore or change when enter keys
     # set default-terminal to be screen* to fix it
     run(['tmux', 'select-pane', '-T', window_name + '-' + str(pane_number)])
 
-    return 0
+    return True
 
 
-# sendKeys window-item
-def sendKeys(window_item):
+# send keys window-item
+def send_keys(window_item):
     for pane_number in range(len(WINDOWS_OPTION[window_item]['panes'])):
         run(['tmux', 'select-pane', '-t', str(pane_number)])
 
         # set title
-        setTitle(WINDOWS_OPTION[window_item]['name'], pane_number)
+        set_title(WINDOWS_OPTION[window_item]['name'], pane_number)
 
         # if the software (eg: vim) can't run on a smaller terminal, an error may be reported
         # use `-h` horizontal split or add `sleep` to fix it
@@ -74,39 +84,50 @@ def sendKeys(window_item):
             run(['tmux', 'send-keys', 'clear', 'C-m'])
             run(['tmux', 'send-keys', cmd, 'C-m'])
 
-    return 0
+    return True
 
 
-# createPanes window-item
-def createPanes(window_item):
+# create panes window-item
+def create_panes(window_item):
     for pane_number in range(len(WINDOWS_OPTION[window_item]['panes'])-1):
         # maybe no enough space for new pane
         # if you want more panes, you can use `-h` horizontal split
         run(['tmux', 'split-window', '-p', '100'])
 
-    return 0
+    return True
 
 
-# createWindows session-name
-def createWindows(SESSION_NAME):
-    # create windows
+# create session
+def create_session(session_name, window_name):
+    run(['tmux', 'new', '-d', '-s', session_name, '-n', window_name])
+
+    return True
+
+
+# create windows session-name
+def create_windows(SESSION_NAME):
+    '''
+    create sessions
+    create windows
+    '''
+
     for window_item in sorted(WINDOWS_OPTION.keys()):
         window_name = WINDOWS_OPTION[window_item]['name']
 
         if (window_item == 'w_0'):
-            run(['tmux', 'new', '-d', '-s', SESSION_NAME, '-n', window_name])
+            create_session(SESSION_NAME, window_name)
         else:
             run(['tmux', 'new-window', '-n', window_name])
 
         # create panes
-        createPanes(window_item)
+        create_panes(window_item)
 
         # set windows layout
         window_layout = WINDOWS_OPTION[window_item].get('layout', 'tiled')
         run(['tmux', 'select-layout', window_layout])
 
         # send keys and set title
-        sendKeys(window_item)
+        send_keys(window_item)
 
         # zoom pane or select pane
         if (WINDOWS_OPTION[window_item].__contains__('zoom')):
@@ -118,10 +139,16 @@ def createWindows(SESSION_NAME):
 
     run(['tmux', 'select-window', '-t', '0'])
 
-    return 0
+    return True
 
 
-# ----------------------------------------
+def run_fun():
+    if not check_session(SESSION_NAME):
+        create_windows(SESSION_NAME)
+        run(['tmux', 'a', '-t', SESSION_NAME])
+    else:
+        run(['tmux', 'a', '-t', SESSION_NAME])
 
-createWindows(SESSION_NAME)
-run(['tmux', 'a', '-t', SESSION_NAME])
+
+if __name__ == '__main__':
+    run_fun()
