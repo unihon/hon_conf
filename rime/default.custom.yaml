@@ -1,0 +1,8 @@
+patch:
+  menu/page_size: 6
+  schema_list:
+    - schema: wubi86
+    # - schema: luna_pinyin_simp
+  switcher/caption: "〔menu〕"
+  switcher/hotkeys:
+    - F4
