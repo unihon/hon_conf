@@ -1,8 +1,33 @@
+customization:
+  distribution_code_name: Weasel
+  distribution_version: 0.14.3
+  generator: "Rime::SwitcherSettings"
+  modified_time: "Sat May  9 00:51:26 2020"
+  rime_version: 1.5.3
 patch:
-  menu/page_size: 6
+  "menu/page_size": 6
+  "ascii_composer/switch_key/Shift_L": commit_code
+  "key_binder/bindings":
+    # fit menu contorl ---
+    - { accept: Up, send: Up, when: composing }
+    - { accept: Down, send: Down, when: composing }
+    - { accept: Left, send: Up, when: composing }
+    - { accept: Right, send: Down, when: composing }
+    # page ---
+    - { accept: "Control+n", send: Next, when: has_menu }
+    - { accept: "Control+p", send: Prior, when: has_menu }
+    # vim ---
+    # note: just Up/Down can move active
+    - { accept: "Control+h", send: Up, when: has_menu }
+    - { accept: "Control+j", send: Down, when: has_menu }
+    - { accept: "Control+k", send: Up, when: has_menu }
+    - { accept: "Control+l", send: Down, when: has_menu }
+    - { accept: "Control+a", send: Home, when: has_menu }
+    - { accept: "Control+e", send: End, when: has_menu }
+
   schema_list:
-    - schema: wubi86
+    - { schema: gtwb }
     # - schema: luna_pinyin_simp
-  switcher/caption: "〔menu〕"
-  switcher/hotkeys:
-    - F4
+  "switcher/caption": "〔MENU〕"
+  "switcher/hotkeys":
+    - "Control+Shift+F4"

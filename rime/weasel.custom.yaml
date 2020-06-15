@@ -1,0 +1,23 @@
+customization:
+  distribution_code_name: Weasel
+  distribution_version: 0.14.3
+  generator: "Weasel::UIStyleSettings"
+  modified_time: "Mon Jun 15 11:55:21 2020"
+  rime_version: 1.5.3
+patch:
+  preset_color_schemes:
+    Turf: {author: "unihon <unihon@outlook.com>", back_color: 0xFFFFFF, border_color: 0x828A68, candidate_text_color: 0x000000, comment_text_color: 0xAAAAAA, hilited_back_color: 0xDDDDDD, hilited_candidate_back_color: 0x828A68, hilited_candidate_text_color: 0xFFFFFF, hilited_comment_text_color: 0xAAAAAA, hilited_text_color: 0x555555, label_color: 0xAAAAAA, name: "草皮／Turf", text_color: 0x555555}
+  "style/color_scheme": Turf
+  "style/display_tray_icon": false
+  "style/horizontal": true
+  "style/inline_preedit": true
+  "style/layout/border_width": 0
+  "style/layout/candidate_spacing": 20
+  "style/layout/hilite_padding": 10
+  "style/layout/hilite_spacing": 10
+  "style/layout/margin_x": 11
+  "style/layout/margin_y": 11
+  "style/layout/min_height": 0
+  "style/layout/min_width": 0
+  "style/layout/round_corner": 0
+  "style/layout/spacing": 20

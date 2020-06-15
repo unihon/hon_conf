@@ -1,6 +1,0 @@
-patch:
-  menu/page_size: 4
-  translator/enable_user_dict: false
-  key_binder/bindings:
-    - {accept: "semicolon", send: 2, when: has_menu}
-    - {accept: "apostrophe", send: 3, when: has_menu}

@@ -1,0 +1,23 @@
+---
+name: wb_expand
+note: "expand dict"
+sort: by_weigth
+version: "0.0.1"
+last_edit_time: "2020-05-15"
+...
+
+# common ---
+可以	skn	1
+试下	yagh	1
+等下	tfgh	1
+看下	rhgh	1
+看吧	rhkc	1
+查询	sjyq	1
+
+# trem ---
+钉钉	qsqs	1
+飞书	ninn	1
+
+# self ---
+禁封	ssff	1
+封禁	ffss	1
